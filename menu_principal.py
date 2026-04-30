@@ -34,8 +34,8 @@ def menu_divide_y_venceras():
 
 
 def menu_voraces():
-    print("\n  [Próximamente] Algoritmos Voraces\n")
-    input("  Presiona Enter para volver...")
+    from algoritmos_voraces.menu_v import menu_v
+    menu_v()
 
 
 def menu_prog_dinamica():
@@ -49,7 +49,7 @@ def menu_principal():
         encabezado()
         print()
         print("  1. Divide y Vencerás")
-        print("  2. Algoritmos Voraces         (próximamente)")
+        print("  2. Algoritmos Voraces")
         print("  3. Programación Dinámica")
         print("  0. Salir")
         print()
