@@ -84,7 +84,11 @@ Salida  : 2   (aparece 4 veces > 7/2 = 3.5)
 
 ---
 
-## Próximamente
+Instalar requeriments
 
-- **Sección 2 — Algoritmos Voraces**
-- **Sección 3 — Programación Dinámica**
+Y hacer lo siguiente 
+
+```bash
+source venv/bin/activate
+streamlit run app.py
+```
