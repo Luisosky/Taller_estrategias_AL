@@ -13,7 +13,7 @@ def format_matrix(matrix):
         lines.append(f"    [{row_str}]")
     return "\n".join(lines)
 
-def min_cost_path_detailed(cost):
+def min_cost_path(cost):
     if not cost or not cost[0]:
         return
         
@@ -138,7 +138,7 @@ def min_cost_path_detailed(cost):
             print(f"    {idx + 1}. {mov} ({r},{c})  → Costo acumulado: {dp[prev_r][prev_c]} + {cost[r][c]} = {dp[r][c]}")
 
     print()
-    print("════════════════════════════════════════════════════════════")
+    return dp[m-1][n-1]
 
 if __name__ == "__main__":
     grid = [
@@ -146,4 +146,4 @@ if __name__ == "__main__":
         [4, 8, 2],
         [1, 5, 3]
     ]
-    min_cost_path_detailed(grid)
+    min_cost_path(grid)

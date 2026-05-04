@@ -17,10 +17,16 @@ def format_knapsack_table(dp, capacity, items_labels):
     
     return "\n".join(lines)
 
-def knapsack_detailed(W, wt, val, item_names):
-    n = len(val)
+def knapsack(W, wt, val, n=None, item_names=None):
+    if n is None:
+        n = len(val)
+    if item_names is None:
+        item_names = [chr(65 + i) for i in range(n)] # A, B, C...
+        
     # Tabla DP inicializada con 0s
     dp = [[0 for _ in range(W + 1)] for _ in range(n + 1)]
+    
+    # Lógica de llenado
     
     print("════════════════════════════════════════════════════════════")
     print("  PRUEBA DE ESCRITORIO — Problema de la Mochila (0/1 DP)")
@@ -87,7 +93,7 @@ def knapsack_detailed(W, wt, val, item_names):
     
     print(f"\n  Resumen: {', '.join(reversed(selected_items))}")
     print(f"  Valor total: {resultado}")
-    print("════════════════════════════════════════════════════════════")
+    return resultado
 
 if __name__ == "__main__":
     # Items: A, B, C, D, E
@@ -96,4 +102,4 @@ if __name__ == "__main__":
     valores = [2, 5, 10, 14, 15]
     capacidad = 8
     
-    knapsack_detailed(capacidad, pesos, valores, nombres)
+    knapsack(capacidad, pesos, valores, item_names=nombres)
