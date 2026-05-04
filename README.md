@@ -91,4 +91,7 @@ Y hacer lo siguiente
 ```bash
 source venv/bin/activate
 streamlit run app.py
+
+python -m venv venv
+.\venv\Scripts\Activate
 ```
