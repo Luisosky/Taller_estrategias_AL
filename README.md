@@ -19,10 +19,10 @@ taller_estrategias/
 │   └── ejercicio2_elemento_mayoritario.py   ← Elemento mayoritario
 │
 ├── algoritmos_voraces/
-│   └── __init__.py                          ← (próximamente)
+│   └── __init__.py                       
 │
 └── programacion_dinamica/
-    └── __init__.py                          ← (próximamente)
+    └── __init__.py                          
 ```
 
 ---
