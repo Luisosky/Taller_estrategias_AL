@@ -156,7 +156,7 @@ def graham_scan(puntos_raw, pasos):
         punto_nuevo = ordenados[i]
 
         while (len(pila) > 1 and
-               orientacion(pila[-2], pila[-1], punto_nuevo) >= 0):
+               orientacion(pila[-2], pila[-1], punto_nuevo) <= 0):
             descartado = pila.pop()
             pasos.append({
                 'tipo': 'descartar',
