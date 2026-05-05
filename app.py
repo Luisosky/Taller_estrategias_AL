@@ -279,15 +279,124 @@ def render_pd():
                 for row in grid_str.strip().split('\n'):
                     grid.append([int(x.strip()) for x in row.split(',')])
                 
-                costo = min_cost_path(grid)
-                st.success(f"El costo mínimo es: {costo}")
+                costo, path, dp = min_cost_path(grid)
+                st.success(f"El costo mínimo es: **{costo}**")
                 
-                # Visualización con Heatmap
-                fig = go.Figure(data=go.Heatmap(z=grid, text=grid, texttemplate="%{text}", colorscale="Viridis"))
-                fig.update_layout(title="Grid de Costos", xaxis_title="Columna", yaxis_title="Fila")
+                m, n = len(grid), len(grid[0])
+                path_set = set(path)
+                
+                # Construir matrices de color: celda en ruta = 1, el resto = 0
+                z_highlight = [[0]*n for _ in range(m)]
+                for (r, c) in path:
+                    z_highlight[r][c] = 1
+                
+                # Texto de cada celda: costo original + costo acumulado dp
+                cell_text = [[f"{grid[r][c]}<br><sub>dp={dp[r][c]}</sub>" for c in range(n)] for r in range(m)]
+                
+                # Colorscale: gris para celdas normales, verde para celdas en la ruta
+                colorscale = [[0, '#2d2d3d'], [1, '#00c853']]
+                
+                fig = go.Figure()
+                
+                # Heatmap base con colores de ruta
+                fig.add_trace(go.Heatmap(
+                    z=z_highlight,
+                    text=cell_text,
+                    texttemplate="%{text}",
+                    colorscale=colorscale,
+                    showscale=False,
+                    hovertemplate="Fila: %{y}<br>Columna: %{x}<br>Costo: %{customdata}<extra></extra>",
+                    customdata=grid,
+                    textfont=dict(size=14, color='white'),
+                ))
+                
+                # Dibujar flechas de la ruta óptima
+                path_x = [c for (r, c) in path]
+                path_y = [r for (r, c) in path]
+                
+                fig.add_trace(go.Scatter(
+                    x=path_x,
+                    y=path_y,
+                    mode='lines+markers',
+                    line=dict(color='#ffeb3b', width=3, dash='solid'),
+                    marker=dict(size=12, color='#ffeb3b', symbol='circle',
+                                line=dict(width=2, color='#f57f17')),
+                    name='Ruta Óptima',
+                    hoverinfo='skip',
+                ))
+                
+                # Marcar inicio y fin
+                fig.add_trace(go.Scatter(
+                    x=[path_x[0]], y=[path_y[0]],
+                    mode='markers+text',
+                    marker=dict(size=18, color='#00e676', symbol='star',
+                                line=dict(width=2, color='white')),
+                    text=['INICIO'], textposition='top center',
+                    textfont=dict(color='#00e676', size=12),
+                    name='Inicio',
+                    hoverinfo='skip',
+                ))
+                fig.add_trace(go.Scatter(
+                    x=[path_x[-1]], y=[path_y[-1]],
+                    mode='markers+text',
+                    marker=dict(size=18, color='#ff5252', symbol='star',
+                                line=dict(width=2, color='white')),
+                    text=['FIN'], textposition='bottom center',
+                    textfont=dict(color='#ff5252', size=12),
+                    name='Fin',
+                    hoverinfo='skip',
+                ))
+                
+                # Añadir anotaciones de flechas entre celdas consecutivas de la ruta
+                for k in range(len(path) - 1):
+                    r0, c0 = path[k]
+                    r1, c1 = path[k+1]
+                    fig.add_annotation(
+                        x=c1, y=r1, ax=c0, ay=r0,
+                        xref='x', yref='y', axref='x', ayref='y',
+                        showarrow=True,
+                        arrowhead=3, arrowsize=1.5, arrowwidth=2,
+                        arrowcolor='#ffeb3b',
+                    )
+                
+                fig.update_layout(
+                    title=f"Ruta de Costo Mínimo = {costo}",
+                    xaxis=dict(
+                        title="Columna", dtick=1, showgrid=False,
+                        zeroline=False, constrain='domain',
+                    ),
+                    yaxis=dict(
+                        title="Fila", dtick=1, showgrid=False,
+                        zeroline=False, autorange='reversed', scaleanchor='x',
+                    ),
+                    plot_bgcolor='#0E1117',
+                    paper_bgcolor='#0E1117',
+                    font=dict(color='white'),
+                    showlegend=True,
+                    legend=dict(
+                        orientation='h', yanchor='bottom', y=-0.2,
+                        xanchor='center', x=0.5,
+                    ),
+                )
                 st.plotly_chart(fig, use_container_width=True)
+                
+                # Mostrar los pasos de la ruta como texto
+                st.markdown("#### 🛤️ Pasos de la Ruta Óptima")
+                for idx, (r, c) in enumerate(path):
+                    if idx == 0:
+                        st.markdown(f"**{idx+1}.** Inicio en `({r},{c})` → Costo: `{grid[r][c]}`")
+                    else:
+                        prev_r, prev_c = path[idx-1]
+                        if r > prev_r and c > prev_c:
+                            mov = "↘️ Diagonal"
+                        elif r > prev_r:
+                            mov = "⬇️ Abajo"
+                        else:
+                            mov = "➡️ Derecha"
+                        st.markdown(f"**{idx+1}.** {mov} hasta `({r},{c})` → Costo acumulado: `{dp[prev_r][prev_c]}` + `{grid[r][c]}` = `{dp[r][c]}`")
+                
             except Exception as e:
-                st.error("Error en el formato del grid.")
+                st.error(f"Error en el formato del grid: {e}")
                 
     elif "Mochila 0/1" in ejercicio:
         st.subheader("Problema de la Mochila 0/1")

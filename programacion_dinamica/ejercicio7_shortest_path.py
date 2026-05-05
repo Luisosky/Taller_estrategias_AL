@@ -138,7 +138,7 @@ def min_cost_path(cost):
             print(f"    {idx + 1}. {mov} ({r},{c})  → Costo acumulado: {dp[prev_r][prev_c]} + {cost[r][c]} = {dp[r][c]}")
 
     print()
-    return dp[m-1][n-1]
+    return dp[m-1][n-1], path, dp
 
 if __name__ == "__main__":
     grid = [
